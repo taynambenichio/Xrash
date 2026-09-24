@@ -1,3 +1,6 @@
+#sourceLocation(file: "xrashd/DaemonServer.swift", line: 2)
+// Swift's Debug no-escape check around queue.sync does not apply the build's
+// prefix maps. Keep its runtime diagnostic relative, with matching lines.
 import Darwin
 import Dispatch
 import Foundation
