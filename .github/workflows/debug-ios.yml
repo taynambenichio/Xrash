@@ -1,0 +1,42 @@
+name: Debug iPhone build
+
+on:
+  push:
+    branches: [debug/icon-crash]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      DERIVED_DATA: /private/tmp/xrash-debug-deriveddata
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Run the Mac harness
+        run: make harness
+      - name: Install packaging tools
+        run: brew install dpkg ldid
+      - name: Build and verify Debug for roothide
+        run: |
+          make set-version VERSION=0.4.6 BUILD=101
+          make deb FLAVOR=roothide CONFIGURATION=Debug SKIP_HARNESS=1
+          make audit-floor CONFIGURATION=Debug
+      - name: Keep the package and matching binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: xrash-debug-101
+          path: |
+            build/Packages/*.deb
+            /private/tmp/xrash-debug-deriveddata/Build/Products/Debug-iphoneos/Xrash.app/Xrash
+            /private/tmp/xrash-debug-deriveddata/Build/Products/Debug-iphoneos/xrashd
+            /private/tmp/xrash-debug-deriveddata/Build/Products/Debug-iphoneos/*.dSYM
+          if-no-files-found: error
+          retention-days: 7
