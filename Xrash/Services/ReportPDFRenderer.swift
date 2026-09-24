@@ -1,3 +1,7 @@
+#sourceLocation(file: "Xrash/Services/ReportPDFRenderer.swift", line: 2)
+// Swift's Debug no-escape check around pdfData embeds its source location
+// without applying -file-prefix-map. Keep that diagnostic relative, with
+// matching line numbers, while leaving the runtime check enabled.
 import CoreText
 import Then
 import UIKit

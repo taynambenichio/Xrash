@@ -29,6 +29,9 @@ jobs:
           make set-version VERSION=0.4.6 BUILD=101
           make deb FLAVOR=roothide CONFIGURATION=Debug SKIP_HARNESS=1
           make audit-floor CONFIGURATION=Debug
+          products="$DERIVED_DATA/Build/Products/Debug-iphoneos"
+          xcrun dsymutil "$products/Xrash.app/Xrash" -o "$products/Xrash.app.dSYM"
+          xcrun dsymutil "$products/xrashd" -o "$products/xrashd.dSYM"
       - name: Keep the package and matching binaries
         if: always()
         uses: actions/upload-artifact@v7
